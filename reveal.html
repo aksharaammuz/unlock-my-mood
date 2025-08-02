@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Secret Message</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Montserrat+Alternates:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff6b9d;
+            --secondary: #9d7aff;
+            --paper: #fff9e6;
+            --ink: #3a3226;
+            --shadow: rgba(0, 0, 0, 0.2);
+        }
+        
+        body {
+            font-family: 'Caveat', cursive;
+            background-color: #f5e9d9;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--ink);
+        }
+        
+        .note-container {
+            position: relative;
+            max-width: 500px;
+            width: 100%;
+            perspective: 1000px;
+        }
+        
+        .note-paper {
+            background: var(--paper);
+            padding: 40px 30px;
+            box-shadow: 0 10px 30px var(--shadow);
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateY(10deg);
+            animation: unfold 1.5s ease forwards;
+            border-radius: 2px;
+            line-height: 1.8;
+        }
+        
+        .note-paper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 30px;
+            width: 2px;
+            background: rgba(238, 139, 198, 0.882);
+        }
+        
+        .message-content {
+            font-size: 1.8rem;
+            margin: 20px 0;
+            white-space: pre-line;
+            transform: translateX(10px);
+        }
+        
+        .signature {
+            font-family: 'Caveat', cursive;
+            font-size: 2rem;
+            text-align: right;
+            margin-top: 40px;
+            color: var(--primary);
+        }
+        
+        .tape {
+            position: absolute;
+            width: 100px;
+            height: 30px;
+            background: rgba(230, 136, 211, 0.5);
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-2deg);
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+        
+        .flower {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+        
+        .flower-1 { top: 10px; right: 20px; transform: rotate(15deg); }
+        .flower-2 { bottom: 15px; left: 25px; transform: rotate(-10deg); }
+        
+        .btn-return {
+            font-family: 'Montserrat Alternates', sans-serif;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 40px;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 3px 10px var(--shadow);
+        }
+        
+        .btn-return:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        @keyframes unfold {
+            from { 
+                transform: rotateY(90deg) scale(0.8);
+                opacity: 0;
+            }
+            to { 
+                transform: rotateY(10deg) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .message-content {
+                font-size: 1.5rem;
+            }
+            
+            .note-paper {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="note-container">
+        <div class="tape"></div>
+        <div class="note-paper">
+            <div class="flower flower-1">🌸</div>
+            <div class="flower flower-2">🌹</div>
+            
+            <div class="message-content" id="message-content"></div>
+            <div class="signature">With love</div>
+        </div>
+        
+        <center>
+            <a href="index.html" class="btn-return">Create Your Own</a>
+        </center>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const messageData = urlParams.get('data');
+            
+            if (messageData) {
+                try {
+                    const data = JSON.parse(atob(messageData));
+                    document.getElementById('message-content').textContent = data.message;
+                } catch (e) {
+                    document.getElementById('message-content').textContent = "This message couldn't be loaded properly... but I still love you!";
+                }
+            } else {
+                document.getElementById('message-content').textContent = "No secret message found... but here's a virtual hug anyway! 🤗";
+            }
+        });
+    </script>
+</body>
+</html>

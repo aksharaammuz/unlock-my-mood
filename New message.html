@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlock My Mood</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #ff6b9d;
+            --secondary: #9d7aff;
+            --dark: #333;
+            --light: #fff0f5;
+        }
+        
+        body {
+            font-family: 'Montserrat Alternates', sans-serif;
+            background: linear-gradient(135deg, var(--light) 0%, #f8f0ff 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            transition: all 0.5s ease;
+            color: var(--dark);
+        }
+        
+        body.dimmed {
+            background: linear-gradient(135deg, #222 0%, #111 100%);
+            color: white;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin: 20px 0;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-top: 0;
+        }
+        
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .quote {
+            font-style: italic;
+            color: #e088d6;
+            text-align: center;
+            margin: 30px 0;
+            font-size: 1.2rem;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(157, 122, 255, 0.2);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        /* Button Styles */
+        .btn {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: slideUp 0.4s ease;
+        }
+        
+        .modal h3 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+        
+        /* Share Link Styles */
+        .share-link {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            word-break: break-all;
+        }
+        
+        .copy-btn {
+            margin-top: 10px;
+        }
+        
+        /* Answer Options */
+        .answer-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .answer-option {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .answer-option:hover {
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes reveal {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        
+        /* Sections */
+        #create-section, #share-section, #respond-section {
+            display: none;
+        }
+        
+        .active-section {
+            display: block !important;
+            animation: reveal 0.5s ease;
+        }
+        
+        .secret-message {
+            background: rgba(255,255,255,0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 5px solid var(--primary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .answer-options {
+                flex-direction: column;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Unlock My Mood</h1>
+        
+        <p class="quote">"In a relationship, the little things are the big things"</p>
+        
+        <!-- Create Section -->
+        <div class="section active-section" id="create-section">
+            <h2>Create</h2>
+            <p>Write a quiz question with multiple choice answers and hide your secret message</p>
+            
+            <div class="form-group">
+                <label for="question">Your Question</label>
+                <input type="text" id="question" placeholder="E.g. Where was our first date?">
+            </div>
+            
+            <div class="form-group">
+                <label for="answers">Possible Answers (comma separated)</label>
+                <input type="text" id="answers" placeholder="E.g. Cafe, Park, Restaurant, Movie Theater">
+            </div>
+            
+            <div class="form-group">
+                <label for="correct-answer">Correct Answer</label>
+                <input type="text" id="correct-answer" placeholder="Must match one of the answers exactly">
+            </div>
+            
+            <div class="form-group">
+                <label for="secret-message">Secret Message</label>
+                <textarea id="secret-message" placeholder="The sweet message you want to reveal"></textarea>
+            </div>
+            
+            <button class="btn btn-block" id="create-btn">Create Magic</button>
+        </div>
+        
+        <!-- Share Section -->
+        <div class="section" id="share-section">
+            <h2>Share Your Quiz</h2>
+            <p>Send this link to your partner to let them answer your question</p>
+            
+            <div class="form-group">
+                <label>Shareable Link:</label>
+                <div class="share-link" id="share-link"></div>
+                <button class="btn copy-btn" id="copy-btn">Copy Link</button>
+            </div>
+            
+            <button class="btn btn-secondary btn-block" id="new-quiz-btn">Create Another Quiz</button>
+        </div>
+        
+        <!-- Respond Section -->
+        <div class="section" id="respond-section">
+            <h2 id="respond-question"></h2>
+            <p>Answer correctly to reveal the secret message!</p>
+            
+            <div class="answer-options" id="answer-options"></div>
+            
+            <div class="form-group">
+                <label for="user-answer">Or type your answer:</label>
+                <input type="text" id="user-answer" placeholder="Type your answer here">
+            </div>
+            
+            <button class="btn btn-block" id="reveal-btn">Reveal Message</button>
+            
+            <div class="secret-message" id="message-display"></div>
+        </div>
+    </div>
+    
+    <!-- Wrong Answer Modal -->
+    <div class="modal" id="wrong-answer-modal">
+        <div class="modal-content">
+            <h3>Oops! 💔</h3>
+            <p>That's not quite right, sweetheart! Try again!</p>
+            <button class="btn" id="close-modal">Okay</button>
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div class="modal" id="success-modal">
+        <div class="modal-content">
+            <h3>Link Copied! 💖</h3>
+            <p>Now share it with your special someone!</p>
+            <button class="btn" id="close-success-modal">Okay</button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const createBtn = document.getElementById('create-btn');
+            const revealBtn = document.getElementById('reveal-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const newQuizBtn = document.getElementById('new-quiz-btn');
+            const closeModalBtn = document.getElementById('close-modal');
+            const closeSuccessModalBtn = document.getElementById('close-success-modal');
+            const wrongAnswerModal = document.getElementById('wrong-answer-modal');
+            const successModal = document.getElementById('success-modal');
+            
+            // Sections
+            const createSection = document.getElementById('create-section');
+            const shareSection = document.getElementById('share-section');
+            const respondSection = document.getElementById('respond-section');
+            
+            // Store the quiz data
+            let quizData = null;
+            
+            // Check if we're viewing a shared quiz
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedData = urlParams.get('data');
+            
+            if (sharedData) {
+                try {
+                    quizData = JSON.parse(atob(sharedData));
+                    showRespondSection(quizData);
+                } catch (e) {
+                    alert('Invalid quiz link!');
+                    window.location.href = 'message.html';
+                }
+            } else {
+                createSection.classList.add('active-section');
+            }
+            
+            // Create the quiz
+            createBtn.addEventListener('click', function() {
+                const question = document.getElementById('question').value.trim();
+                const answers = document.getElementById('answers').value.split(',').map(a => a.trim());
+                const correctAnswer = document.getElementById('correct-answer').value.trim();
+                const secretMessage = document.getElementById('secret-message').value.trim();
+                
+                if (!question || answers.length < 2 || !correctAnswer || !secretMessage) {
+                    alert('Please fill all fields with valid data!');
+                    return;
+                }
+                
+                if (!answers.includes(correctAnswer)) {
+                    alert('Correct answer must match one of the possible answers!');
+                    return;
+                }
+                
+                // Store the data
+                quizData = {
+                    question,
+                    answers,
+                    correctAnswer,
+                    secretMessage
+                };
+                
+                // Generate shareable link
+                const encodedData = btoa(JSON.stringify(quizData));
+                const shareLink = `${window.location.origin}${window.location.pathname}?data=${encodedData}`;
+                document.getElementById('share-link').textContent = shareLink;
+                
+                // Show share section
+                showSection(shareSection);
+            });
+            
+            // Copy share link
+            copyBtn.addEventListener('click', function() {
+                const shareLink = document.getElementById('share-link').textContent;
+                navigator.clipboard.writeText(shareLink).then(() => {
+                    successModal.style.display = 'flex';
+                });
+            });
+            
+            // Create new quiz
+            newQuizBtn.addEventListener('click', function() {
+                // Clear form
+                document.getElementById('question').value = '';
+                document.getElementById('answers').value = '';
+                document.getElementById('correct-answer').value = '';
+                document.getElementById('secret-message').value = '';
+                
+                showSection(createSection);
+            });
+            
+            // Reveal the message
+            revealBtn.addEventListener('click', function() {
+                const userAnswer = document.getElementById('user-answer').value.trim();
+                checkAnswer(userAnswer);
+            });
+            
+            // Close modals
+            closeModalBtn.addEventListener('click', function() {
+                wrongAnswerModal.style.display = 'none';
+                document.body.classList.remove('dimmed');
+            });
+            
+            closeSuccessModalBtn.addEventListener('click', function() {
+                successModal.style.display = 'none';
+            });
+            
+            // Allow pressing Enter in answer field
+            document.getElementById('user-answer').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    revealBtn.click();
+                }
+            });
+            
+            // Helper function to show sections
+            function showSection(section) {
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
+                section.classList.add('active-section');
+            }
+            
+            // Show respond section with quiz data
+            function showRespondSection(data) {
+                document.getElementById('respond-question').textContent = data.question;
+                
+                const optionsContainer = document.getElementById('answer-options');
+                optionsContainer.innerHTML = '';
+                
+                data.answers.forEach(answer => {
+                    const option = document.createElement('div');
+                    option.className = 'answer-option';
+                    option.textContent = answer;
+                    option.addEventListener('click', () => {
+                        document.getElementById('user-answer').value = answer;
+                        checkAnswer(answer);
+                    });
+                    optionsContainer.appendChild(option);
+                });
+                
+                showSection(respondSection);
+            }
+            
+         // Check if answer is correct
+function checkAnswer(userAnswer) {
+    if (userAnswer.toLowerCase() === quizData.correctAnswer.toLowerCase()) {
+        // Correct answer - redirect to reveal page
+        const revealData = {
+            message: quizData.secretMessage,
+            question: quizData.question
+        };
+        const encodedReveal = btoa(JSON.stringify(revealData));
+        window.location.href = `reveal.html?data=${encodedReveal}`;
+    } else {
+        // Wrong answer - show modal and dim background
+        document.body.classList.add('dimmed');
+        wrongAnswerModal.style.display = 'flex';
+        
+        // Add shake animation to input
+        const input = document.getElementById('user-answer');
+        input.style.animation = 'shake 0.4s ease';
+        setTimeout(() => {
+            input.style.animation = '';
+        }, 400);
+                }
+            }
+        });
+    </script>
+</body>

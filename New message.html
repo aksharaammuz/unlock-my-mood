@@ -203,6 +203,9 @@
             padding: 10px 15px;
             cursor: pointer;
             transition: all 0.2s ease;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
         }
         
         .answer-option:hover {
@@ -248,6 +251,7 @@
             border-radius: 10px;
             margin-top: 20px;
             border-left: 5px solid var(--primary);
+            display: none;
         }
         
         /* Responsive */
@@ -263,6 +267,22 @@
             .answer-options {
                 flex-direction: column;
             }
+            
+            .answer-option {
+                min-width: 100%;
+            }
+        }
+        
+        /* Fix for the answer box width */
+        #user-answer {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        /* Fix for the reveal button spacing */
+        #reveal-btn {
+            margin-top: 20px;
+            margin-bottom: 0;
         }
         
     </style>
@@ -271,7 +291,7 @@
     <div class="container">
         <h1>Unlock My Mood</h1>
         
-        <p class="quote">“Every answer holds a secret… will you find it?”</p>
+        <p class="quote">"Every answer holds a secret… will you find it?"</p>
         
         <!-- Create Section -->
         <div class="section active-section" id="create-section">
@@ -317,10 +337,15 @@
         
         <!-- Respond Section -->
         <div class="section" id="respond-section">
-            <h2 id="respond-question"></h2>
+            <h2 id="respond-question">our anniversary date</h2>
             <p>Answer correctly to reveal the secret message!</p>
             
-            <div class="answer-options" id="answer-options"></div>
+            <div class="answer-options" id="answer-options">
+                <div class="answer-option">January 24</div>
+                <div class="answer-option">January 25</div>
+                <div class="answer-option">February 22</div>
+                <div class="answer-option">March 30</div>
+            </div>
             
             <div class="form-group">
                 <label for="user-answer">Or type your answer:</label>
@@ -329,7 +354,9 @@
             
             <button class="btn btn-block" id="reveal-btn">Reveal Message</button>
             
-            <div class="secret-message" id="message-display"></div>
+            <div class="secret-message" id="message-display">
+                This is where the secret message would appear when the correct answer is given!
+            </div>
         </div>
     </div>
     
@@ -384,7 +411,14 @@
                     window.location.href = 'message.html';
                 }
             } else {
-                createSection.classList.add('active-section');
+                // For demo purposes, let's show the respond section with sample data
+                quizData = {
+                    question: "our anniversary date",
+                    answers: ["January 24", "January 25", "February 22", "March 30"],
+                    correctAnswer: "January 24",
+                    secretMessage: "I'll love you forever and always! 💖"
+                };
+                showRespondSection(quizData);
             }
             
             // Create the quiz
@@ -463,6 +497,13 @@
                 }
             });
             
+            // Add click events to answer options
+            document.querySelectorAll('.answer-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.getElementById('user-answer').value = this.textContent;
+                });
+            });
+            
             // Helper function to show sections
             function showSection(section) {
                 document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
@@ -482,7 +523,6 @@
                     option.textContent = answer;
                     option.addEventListener('click', () => {
                         document.getElementById('user-answer').value = answer;
-                        checkAnswer(answer);
                     });
                     optionsContainer.appendChild(option);
                 });
@@ -490,30 +530,27 @@
                 showSection(respondSection);
             }
             
-         // Check if answer is correct
-function checkAnswer(userAnswer) {
-    if (userAnswer.toLowerCase() === quizData.correctAnswer.toLowerCase()) {
-        // Correct answer - redirect to reveal page
-        const revealData = {
-            message: quizData.secretMessage,
-            question: quizData.question
-        };
-        const encodedReveal = btoa(JSON.stringify(revealData));
-        window.location.href = `reveal.html?data=${encodedReveal}`;
-    } else {
-        // Wrong answer - show modal and dim background
-        document.body.classList.add('dimmed');
-        wrongAnswerModal.style.display = 'flex';
-        
-        // Add shake animation to input
-        const input = document.getElementById('user-answer');
-        input.style.animation = 'shake 0.4s ease';
-        setTimeout(() => {
-            input.style.animation = '';
-        }, 400);
+            // Check if answer is correct
+            function checkAnswer(userAnswer) {
+                if (userAnswer.toLowerCase() === quizData.correctAnswer.toLowerCase()) {
+                    // Correct answer - show the secret message
+                    document.getElementById('message-display').textContent = quizData.secretMessage;
+                    document.getElementById('message-display').style.display = 'block';
+                } else {
+                    // Wrong answer - show modal and dim background
+                    document.body.classList.add('dimmed');
+                    wrongAnswerModal.style.display = 'flex';
+                    
+                    // Add shake animation to input
+                    const input = document.getElementById('user-answer');
+                    input.style.animation = 'shake 0.4s ease';
+                    setTimeout(() => {
+                        input.style.animation = '';
+                    }, 400);
                 }
             }
         });
     </script>
 
 </body>
+</html>
